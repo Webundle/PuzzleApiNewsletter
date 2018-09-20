@@ -1,0 +1,3 @@
+newsletter_subscriber:
+    type: rest
+    resource: Puzzle\Api\NewsletterBundle\Controller\SubscriberController
