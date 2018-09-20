@@ -1,3 +1,7 @@
 newsletter_subscriber:
     type: rest
     resource: Puzzle\Api\NewsletterBundle\Controller\SubscriberController
+    
+newsletter_group:
+    type: rest
+    resource: Puzzle\Api\NewsletterBundle\Controller\GroupController
