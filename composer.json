@@ -29,11 +29,10 @@
 		"webundle/puzzle-api-user" : "^1.0"
 	},
 	"autoload" : {
-		"psr-0" : {
-			"Webundle\\Puzzle\\Api\\NewsletterBundle" : ""
+		"psr-4" : {
+			"Puzzle\\Api\\NewsletterBundle\\" : ""
 		}
 	},
-	"target-dir" : "Webundle/Puzzle/Api/NewsletterBundle",
 	"extra" : {
 		"branch-alias" : {
 			"dev-master" : "1.0-dev"
