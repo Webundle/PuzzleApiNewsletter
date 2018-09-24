@@ -81,7 +81,7 @@ class TemplateController extends BaseFOSRestController
 	/**
 	 * @FOS\RestBundle\Controller\Annotations\View()
 	 * @FOS\RestBundle\Controller\Annotations\Put("/{id}")
-	 * @Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter("contact", class="PuzzleApiNewsletterBundle:Template")
+	 * @Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter("template", class="PuzzleApiNewsletterBundle:Template")
 	 */
 	public function putNewsletterTemplateAction(Request $request, Template $template) {
 	    $user = $this->getUser();
