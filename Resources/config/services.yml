@@ -1,1 +1,16 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        
+    # Service
+    Puzzle\Api\NewseltterBundle\:
+        resource: '%kernel.project_dir%/vendor/webundle/puzzle-api-newseltter/*'
+        exclude: '%kernel.project_dir%/vendor/webundle/puzzle-api-newseltter/{Entity,Repository,Tests}'
+    
+    # Controller
+    Puzzle\Api\NewseltterBundle\Controller\:
+        resource: '%kernel.project_dir%/vendor/webundle/puzzle-api-newseltter/Controller'
+        public: true
+        tags: ['controller.service_arguments']
