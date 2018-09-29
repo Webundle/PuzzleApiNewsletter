@@ -30,10 +30,7 @@ use Knp\DoctrineBehaviors\Model\Timestampable\Timestampable;
  * @Hateoas\Relation(
  * 		name = "subscribers", 
  *      exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getSubscribers() === null)"),
- * 		href = @Hateoas\Route(
- * 			"get_newsletter_subscribers", 
- * 			parameters = {"filter" = "id=:~expr(object.stringify(',',object.getSubscribers()))"},
- * 			absolute = true,
+ *      embedded = "expr(object.getSubscribers())"
  * ))
  */
 class Group
@@ -45,34 +42,40 @@ class Group
         Timestampable;
     
     /**
-     * @var array
-     * @ORM\Column(name="subscribers", type="array", nullable=true)
-     * @JMS\Expose
-     * @JMS\Type("array")
+     * @ORM\ManyToMany(targetEntity="Subscriber", mappedBy="groups")
      */
     private $subscribers;
     
-    public function setSubscribers($subscribers) :self {
-        foreach ($subscribers as $subscriber){
+    public function __construct() {
+        $this->subscribers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    public function setSubscribers (Collection $subscribers) : self {
+        foreach ($subscribers as $subscriber) {
             $this->addSubscriber($subscriber);
         }
         
         return $this;
     }
     
-    public function addSubscriber($subscriber) :self {
-        $this->subscribers[] = $subscriber;
-        $this->subscribers = array_unique($this->subscribers);
+    public function addSubscriber(Subscriber $subscriber) :self {
+        if ($this->subscribers->count() === 0 || $this->subscribers->contains($subscriber) === false) {
+            $this->subscribers->add($subscriber);
+            $subscriber->addGroup($this);
+        }
         
         return $this;
     }
     
-    public function removeSubscriber($subscriber) :self {
-        $this->subscribers = array_diff($this->subscribers, [$subscriber]);
+    public function removeSubscriber(Subscriber $subscriber) :self {
+        if ($this->subscribers->contains($subscriber) === true) {
+            $this->subscribers->removeElement($subscriber);
+        }
+        
         return $this;
     }
     
-    public function getSubscribers() :?array {
+    public function getSubscribers() :?Collection {
         return $this->subscribers;
     }
 }

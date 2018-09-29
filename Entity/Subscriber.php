@@ -8,6 +8,8 @@ use Hateoas\Configuration\Annotation as Hateoas;
 use Puzzle\OAuthServerBundle\Traits\PrimaryKeyable;
 use Puzzle\OAuthServerBundle\Traits\Nameable;
 use Knp\DoctrineBehaviors\Model\Blameable\Blameable;
+use Knp\DoctrineBehaviors\Model\Timestampable\Timestampable;
+use Doctrine\Common\Collections\Collection;
 
 
 /**
@@ -28,6 +30,7 @@ use Knp\DoctrineBehaviors\Model\Blameable\Blameable;
 class Subscriber
 {
     use PrimaryKeyable,
+        Timestampable,
         Nameable,
         Blameable;
     
@@ -39,6 +42,19 @@ class Subscriber
      */
     private $email;
     
+    /**
+     * @ORM\ManyToMany(targetEntity="Group", inversedBy="subscribers")
+     * @ORM\JoinTable(name="subscriber_groups",
+     *      joinColumns={@ORM\JoinColumn(name="subscriber_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
+     * )
+     */
+    private $groups;
+    
+    public function __construct() {
+        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
     public function setEmail($email) :self {
         $this->email = $email;
         return $this;
@@ -46,5 +62,33 @@ class Subscriber
 
     public function getEmail() :?string {
         return $this->email;
+    }
+    
+    public function setGroups (Collection $groups) : self {
+        foreach ($groups as $group) {
+            $this->addGroup($group);
+        }
+        
+        return $this;
+    }
+    
+    public function addGroup(Group $group) :self {
+        if ($this->groups->count() === 0 || $this->groups->contains($group) === false) {
+            $this->groups->add($group);
+        }
+        
+        return $this;
+    }
+    
+    public function removeGroup(Group $group) :self {
+        if ($this->groups->contains($group) === true) {
+            $this->groups->removeElement($group);
+        }
+        
+        return $this;
+    }
+    
+    public function getGroups() :?Collection {
+        return $this->groups;
     }
 }
